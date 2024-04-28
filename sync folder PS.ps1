@@ -1,9 +1,12 @@
-# Source and destination folder paths
-$sourceFolder = Read-Host "Define the folder to be synchronized: "
-$destinationFolder = Read-Host "Define the destination path: "
 
-# Function to synchronize folders
 function Sync-Folders {
+    # Source and destination folder paths
+    $sourceFolder = Read-Host "Define the folder to be synchronized: "
+    $destinationFolder = Read-Host "Define the destination path: "
+    $logDestinationFolder = Read-Host "Defines the log destination path: "
+    $logDestinationFolder = $logDestinationFolder + "\LogsPS.txt"
+    Write-Host $logDestinationFolder
+    # Function to synchronize folders
     # Loop indefinitely
     while ($true) {
         # Get list of files in source folder
@@ -18,7 +21,9 @@ function Sync-Folders {
             # Check if file exists in destination
             if (-not (Test-Path $destinationPath)) {
                 Copy-Item -Path $file.FullName -Destination $destinationPath -Force
-                Write-Host "File copied: $($file.FullName) -> $destinationPath"
+                $mensagem = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') File copied: $($file.FullName) -> $destinationPath"
+                Write-Host $mensagem
+                Add-Content -Path $logDestinationFolder -Value $mensagem
             }
         }
 
@@ -28,7 +33,9 @@ function Sync-Folders {
             # Check if file exists in source
             if (-not (Test-Path $sourcePath)) {
                 Remove-Item -Path $file.FullName -Force
-                Write-Host "File deleted: $($file.FullName)"
+                $mensagem = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') File deleted: $($file.FullName)"
+                Write-Host $mensagem
+                Add-Content -Path $logDestinationFolder -Value $mensagem
             }
         }
 
